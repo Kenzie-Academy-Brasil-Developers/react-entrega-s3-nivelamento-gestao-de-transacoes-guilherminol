@@ -1,7 +1,10 @@
 import logo from "./logo.svg";
 import "./App.css";
 import { useState } from "react";
-
+import AddProduct from "./Components/AddProduct/index";
+import ProductList from "./Components/ProductsList/";
+import ExitTotal from "./Components/ExitTotal";
+import ComingTotal from "./Components/CommingTotal";
 function App() {
   const [products, setProducts] = useState([
     { name: "banana", quantity: 100, price: 5 },
@@ -18,73 +21,27 @@ function App() {
   return (
     <div className="App">
       <header className="App-header">
-        <input
-          onChange={(e) =>
-            setNewProduct({
-              name: e.target.value,
-              quantity: newProduct.quantity,
-              price: newProduct.price,
-            })
-          }
-          placeholder="Digite o nome do produto"
-        />
-
-        <input
-          onChange={(e) =>
-            setNewProduct({
-              name: newProduct.name,
-              quantity: Number(e.target.value),
-              price: newProduct.price,
-            })
-          }
-          placeholder="Digite a quantidade do produto"
-        />
-
-        <input
-          onChange={(e) =>
-            setNewProduct({
-              name: newProduct.name,
-              quantity: newProduct.quantity,
-              price: Number(e.target.value),
-            })
-          }
-          placeholder="Digite o preço do produto"
-        />
-
-        <button onClick={() => setProducts([...products, newProduct])}>
-          Adicionar
-        </button>
+        <AddProduct
+          newProduct={newProduct}
+          setNewProduct={setNewProduct}
+          products={products}
+          setProducts={setProducts}
+        ></AddProduct>
         <h2>Display</h2>
         <div>
           {showOut ? (
             <>
-              <ul>
-                Saídas:{" "}
-                {products
-                  .filter((product) => product.quantity < 0)
-                  .map((item, index) => {
-                    return (
-                      <li key={index}>
-                        Nome: {item.name}, Qtd: {item.quantity}, valor:{" "}
-                        {item.price}{" "}
-                      </li>
-                    );
-                  })}
-              </ul>
+              Saídas:
+              <ProductList
+                products={products.filter((product) => product.quantity < 0)}
+              ></ProductList>
             </>
           ) : (
             <>
-              Entrada:{" "}
-              {products
-                .filter((product) => product.quantity > 0)
-                .map((item, index) => {
-                  return (
-                    <li key={index}>
-                      Nome: {item.name}, Qtd: {item.quantity}, valor:{" "}
-                      {item.price}{" "}
-                    </li>
-                  );
-                })}
+              Entradas:{" "}
+              <ProductList
+                products={products.filter((product) => product.quantity > 0)}
+              ></ProductList>
             </>
           )}
           <button onClick={() => setShowOut(!showOut)}>
@@ -103,15 +60,8 @@ function App() {
         </ul>
 
         <h3>Total de saídas:</h3>
-        <p>
-          $
-          {products.reduce((acc, atual) => {
-            if (atual.quantity < 0) {
-              return acc + atual.quantity * -1 * atual.price;
-            }
-            return acc;
-          }, 0)}
-        </p>
+
+        <ExitTotal products={products}></ExitTotal>
         <p>
           Número total de saídas:
           {products.reduce((acc, atual) => {
@@ -122,6 +72,7 @@ function App() {
           }, 0)}
         </p>
         <h3> Total de Entradas: </h3>
+        <ComingTotal products={products}></ComingTotal>
         <p>
           Número total de entradas:
           {products.reduce((acc, atual) => {
